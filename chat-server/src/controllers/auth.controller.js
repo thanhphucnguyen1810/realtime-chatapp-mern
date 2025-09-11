@@ -8,7 +8,8 @@ import filterObj from '~/utils/FilterObj'
 
 // Model
 import User from '~/models/user.model'
-const otp = require('~/Templates/Mail/otp')
+
+import otp from '~/Templates/Mail/otp'
 import resetPassword from '~/Templates/Mail/resetPassword'
 import { promisify } from 'util'
 
@@ -155,7 +156,6 @@ const authController = {
   // Login User
   login: async (req, res, next) => {
     const { email, password } = req.body
-
     if ( !email || !password ) {
       return res.status(400).json({
         status: 'error',
@@ -249,16 +249,23 @@ const authController = {
 
     // 2) Generate the random reset token
     const resetToken = user.createPasswordResetToken()
-    console.log('🔑 RESET TOKEN:', resetToken)
+    console.log('RESET TOKEN:', resetToken)
 
     await user.save({ validateBeforeSave: false })
 
     // 3) Send it to user's email
     try {
       // const resetURL = `https://zenya.com/auth/reset-password?code=${resetToken}`
-      const resetURL = `http://localhost:3000/auth/new-password?token=${resetToken}`
-      // TODO => Send Email with this Reset URL to user's email address
+      const resetURL = `http://localhost:5173/auth/new-password?token=${resetToken}`
       console.log(resetURL)
+
+      await sendEmail({
+        from: 'thanhphucnguyen54@gmail.com',
+        to: user.email,
+        subject: 'Reset Password',
+        html: resetPassword(user.firstName, resetURL),
+        attachments: []
+      })
 
       res.status(200).json({
         status: 'success',
@@ -269,6 +276,8 @@ const authController = {
       user.passwordResetExpires = undefined
 
       await user.save({ validateBeforeSave: false })
+
+      // console.error('Email error:', error.response?.body || error.message || error)
 
       return res.status(500).json({
         message: 'There was an error sending the email, Please try again later.'

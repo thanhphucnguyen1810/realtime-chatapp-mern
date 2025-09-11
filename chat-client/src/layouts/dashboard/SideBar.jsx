@@ -9,6 +9,8 @@ import useSettings from '~/hooks/useSettings'
 import { faker } from '@faker-js/faker'
 import Logo from '~/assets/images/logo.ico'
 import { useNavigate } from 'react-router-dom'
+import { LogoutUser } from '~/redux/slices/auth'
+import { useDispatch } from 'react-redux'
 
 const getPath = (index) => {
   switch (index) {
@@ -41,6 +43,7 @@ const getMenuPath = (index) => {
 
 const SideBar = () => {
 
+  const dispatch = useDispatch()
   const theme = useTheme()
   const navigate = useNavigate()
   const [selected, setSelected] = useState(0)
@@ -51,7 +54,6 @@ const SideBar = () => {
   const open = Boolean(anchorEl)
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
-
   }
   const handleClose = () => {
     setAnchorEl(null)
@@ -167,7 +169,12 @@ const SideBar = () => {
                 >
                   <Stack
                     onClick={() => {
-                      navigate( getMenuPath(idx) )
+                      // If idx is 2 then dispatch logout
+                      if (idx === 2) {
+                        dispatch(LogoutUser())
+                      } else {
+                        navigate( getMenuPath(idx) )
+                      }
                     }}
                     direction='row'
                     alignItems='center'
