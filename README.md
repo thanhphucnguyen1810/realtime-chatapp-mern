@@ -32,3 +32,9 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## 📄 Contact
 If you have any questions or suggestions, feel free to reach out to me at [thanhphucnguyen@gmail.com](mailto:thanhphucnguyen@gmail.com).  
+
+1-10-2025
+
+milestone: project resumed in 2025
+
+
