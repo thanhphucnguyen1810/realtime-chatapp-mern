@@ -1,11 +1,9 @@
 import { Router } from 'express'
 import userController from '~/controllers/user.controller'
-import authController from '~/controllers/auth.controller'
+import { authMiddleware } from '~/middlewares/authMiddleware'
 
 const router = Router()
 
-// ghi đè các thông tin trong DB
-router.patch('/update-me', authController.protect, userController.updateMe)
-
+router.patch('/update-me', authMiddleware.protect, userController.updateMe)
 
 export default router

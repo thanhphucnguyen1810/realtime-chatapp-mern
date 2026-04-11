@@ -9,8 +9,14 @@ import { Stack, Alert, Button, IconButton, InputAdornment } from '@mui/material'
 // Components
 import { Eye, EyeSlash } from 'phosphor-react'
 import FormProvider, { RHFTextField } from '~/components/hook-form'
+import { useDispatch } from 'react-redux'
+import { RegisterUser } from '~/redux/slices/auth'
+import { useNavigate } from 'react-router-dom'
 
 const RegisterForm = () => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
   const [showPassword, setShowPassword] = useState(false)
 
   const RegisterSchema = Yup.object().shape({
@@ -41,9 +47,7 @@ const RegisterForm = () => {
 
   const onSubmit = async (data) => {
     try {
-      // Submit data to backend
-      // eslint-disable-next-line no-console
-      console.log('Submitted:', data)
+      await dispatch(RegisterUser(data, navigate))
     } catch (error) {
       alert(error)
       reset()

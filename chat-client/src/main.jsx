@@ -8,6 +8,9 @@ import '~/index.css'
 import App from '~/App'
 import SettingsProvider from '~/contexts/SettingsContext'
 import { store } from '~/redux/store'
+// Cấu hình React-toastify
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -16,6 +19,7 @@ createRoot(document.getElementById('root')).render(
         <SettingsProvider>
           <BrowserRouter>
             <App />
+            <ToastContainer position='bottom-left' theme='colored' />
           </BrowserRouter>
         </SettingsProvider>
       </ReduxProvider>
