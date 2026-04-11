@@ -11,15 +11,12 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Last Name is required.']
   },
-  about: {
-    type: String
-  },
-  avatar: {
-    type: String
-  },
+  about: { type: String },
+  avatar: { type: String },
   email: {
     type: String,
     required: [true, 'Email is required.'],
+    unique: true,
     validate: {
       validator: function (email) {
         return String(email)
@@ -31,38 +28,30 @@ const userSchema = new mongoose.Schema({
       message: (props) => `Email (${props.value}) is invalid!`
     }
   },
-  password: {
-    type: String
-  },
+  password: { type: String },
   passwordConfirm: {
-    type: String
+    type: String,
+    validate: {
+      validator: function (el) {
+        return el === this.password
+      },
+      message: 'Passwords are not the same!'
+    }
   },
-  passwordChangedAt: {
-    type: Date
-  },
-  passwordResetToken: {
-    type: String
-  },
-  passwordResetExpires: {
-    type: Date
-  },
+  passwordChangedAt: { type: Date },
+  passwordResetToken: { type: String },
+  passwordResetExpires: { type: Date },
   createdAt: {
     type: Date,
     default: Date.now()
   },
-  updatedAt: {
-    type: Date
-  },
+  updatedAt: { type: Date },
   verified: {
     type: Boolean,
     default: false
   },
-  otp:{
-    type: String
-  },
-  otp_expiry_time:{
-    type: Date
-  }
+  otp:{ type: String },
+  otp_expiry_time:{ type: Date }
 })
 
 userSchema.pre('save', async function (next) {
@@ -71,9 +60,6 @@ userSchema.pre('save', async function (next) {
 
   // Hash the otp with cost of 12
   this.otp = await bcrypt.hash(this.otp.toString(), 12)
-
-  console.log(this.otp.toString(), 'FROM PRE SAVE HOOK')
-
   next()
 })
 
@@ -85,7 +71,7 @@ userSchema.pre('save', async function (next) {
   this.password = await bcrypt.hash(this.password, 12)
 
   //! Shift it to next hook // this.passwordChangedAt = Date.now() - 1000;
-
+  this.passwordConfirm = undefined
   next()
 })
 
@@ -97,6 +83,10 @@ userSchema.pre('save', function (next) {
   next()
 })
 
+userSchema.pre('save', function (next) {
+  this.updatedAt = Date.now()
+  next()
+})
 
 userSchema.methods.correctPassword = async function (
   candidatePassword, // 12345
@@ -126,9 +116,6 @@ userSchema.methods.createPasswordResetToken = function () {
   return resetToken
 }
 
-// userSchema.methods.changedPasswordAfter = function (timestamp) {
-//   return timestamp < this.passwordChangedAt
-// }
 
 const User = new mongoose.model('User', userSchema)
 export default User

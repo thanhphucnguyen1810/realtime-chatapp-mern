@@ -27,7 +27,7 @@ const NewPasswordForm = () => {
       .required('Password is required'),
     passwordConfirm: Yup.string()
       .required('Password is required')
-      .oneOf([Yup.ref('newPassword'), null], 'Password must match')
+      .oneOf([Yup.ref('password'), null], 'Password must match')
   })
 
   const defaultValues = {

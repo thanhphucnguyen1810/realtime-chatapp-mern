@@ -26,6 +26,42 @@ const slice = createSlice({
 // Reducer
 export default slice.reducer
 
+export function RegisterUser(formValues, navigate) {
+  return async () => {
+    try {
+      const res = await axios.post('/auth/register', formValues)
+
+      // Sau khi register thành công → gọi gửi OTP
+      await axios.post('/auth/send-otp', {
+        userId: res.data.userId
+      })
+      navigate('/auth/verify', {
+        state: { email: formValues.email }
+      })
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'Register failed')
+    }
+  }
+}
+
+export function VerifyOTP(formValues) {
+  return async (dispatch) => {
+    try {
+      const res = await axios.post('/auth/verify', formValues)
+
+      dispatch(slice.actions.logIn({
+        isLoggedIn: true,
+        token: res.data.token
+      }))
+      return res.data
+
+    } catch (error) {
+      const message = error.response?.data?.message || 'Verify thất bại'
+      throw new Error(message)
+    }
+  }
+}
+
 // Log in
 export function LoginUser(formValues) {
   // formValues => { email, password }
@@ -77,10 +113,10 @@ export function ForgotPassword(formValues) {
 }
 
 export function NewPassword(formValues) {
-  return async (dispatch, getState) {
-    await axios.post('/auth/reset-password', {...formValues}, {
+  return async (dispatch, getState) => {
+    await axios.post('/auth/reset-password', { ...formValues }, {
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       }
     }).then((response) => {
       console.log(response)
