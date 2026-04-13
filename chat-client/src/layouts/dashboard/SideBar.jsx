@@ -163,8 +163,8 @@ const SideBar = () => {
               {Profile_Menu.map((el, idx) => (
                 <MenuItem
                   key={idx}
-                  onClick={() => {
-                    handleClick()
+                  onClick={(event) => {
+                    handleClick(event)
                   }}
                 >
                   <Stack

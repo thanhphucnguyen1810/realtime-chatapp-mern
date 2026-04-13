@@ -6,7 +6,11 @@ import { Link as RouterLink, useSearchParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 // MUI Components
-import { Stack, Alert, Button, IconButton, InputAdornment, Link } from '@mui/material'
+import IconButton from '@mui/material/IconButton'
+import InputAdornment from '@mui/material/InputAdornment'
+import Stack from '@mui/material/Stack'
+import Button from '@mui/material/Button'
+import Alert from '@mui/material/Alert'
 
 // Components
 import { Eye, EyeSlash } from 'phosphor-react'

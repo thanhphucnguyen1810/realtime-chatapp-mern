@@ -1,4 +1,7 @@
-import { Divider, IconButton, Stack } from '@mui/material'
+import Divider from '@mui/material/Divider'
+import IconButton from '@mui/material/IconButton'
+import Stack from '@mui/material/Stack'
+
 import { GithubLogo, GoogleLogo, TwitterLogo, FacebookLogo } from 'phosphor-react'
 
 // ----------------------------------------------------------------------

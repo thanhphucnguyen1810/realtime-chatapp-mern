@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { Provider as ReduxProvider } from 'react-redux'
 import { HelmetProvider } from 'react-helmet-async'
+import './i18n'
 
 import '~/index.css'
 import App from '~/App'

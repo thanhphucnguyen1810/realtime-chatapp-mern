@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 // form
 import { useFormContext, Controller } from 'react-hook-form'
 // @mui
-import { TextField } from '@mui/material'
+import TextField from '@mui/material/TextField'
 
 RHFTextField.propTypes = {
   name: PropTypes.string,
