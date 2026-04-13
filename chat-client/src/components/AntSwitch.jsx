@@ -1,4 +1,4 @@
-import { Switch } from '@mui/material'
+import Switch from '@mui/material/Switch'
 import { styled } from '@mui/material/styles'
 
 const AntSwitch = styled(Switch)(({ theme }) => ({

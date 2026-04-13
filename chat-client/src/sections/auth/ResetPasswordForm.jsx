@@ -3,8 +3,11 @@ import * as Yup from 'yup'
 // form
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+
 // MUI Components
-import { Stack, Alert, Button } from '@mui/material'
+import Stack from '@mui/material/Stack'
+import Button from '@mui/material/Button'
+import Alert from '@mui/material/Alert'
 
 // Components
 import FormProvider, { RHFTextField } from '~/components/hook-form'

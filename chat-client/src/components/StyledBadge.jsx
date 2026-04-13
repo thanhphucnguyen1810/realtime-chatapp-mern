@@ -1,4 +1,4 @@
-import { Badge } from '@mui/material'
+import Badge from '@mui/material/Badge'
 import { styled } from '@mui/material/styles'
 
 const StyledBadge = styled(Badge)(({ theme }) => ({

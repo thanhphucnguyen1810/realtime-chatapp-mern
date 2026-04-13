@@ -1,5 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Button, Stack } from '@mui/material'
+import Stack from '@mui/material/Stack'
+import Button from '@mui/material/Button'
 import { useForm } from 'react-hook-form'
 import * as Yup from 'yup'
 import FormProvider, { RHFTextField } from '~/components/hook-form'
@@ -32,12 +33,12 @@ const VerifyForm = ({ email }) => {
 
   const { handleSubmit, setValue, watch } = methods
 
-  // 🔥 auto focus ô đầu
+  // auto focus ô đầu
   useEffect(() => {
     document.querySelector('input[name="code1"]')?.focus()
   }, [])
 
-  // 🔥 handle change (auto next)
+  // handle change (auto next)
   const handleChange = (e, nextField) => {
     const value = e.target.value.replace(/\D/g, '') // chỉ số
     if (!value) return
@@ -49,14 +50,14 @@ const VerifyForm = ({ email }) => {
     }
   }
 
-  // 🔥 backspace
+  // backspace
   const handleKeyDown = (e, prevField) => {
     if (e.key === 'Backspace' && !e.target.value) {
       document.querySelector(`input[name="${prevField}"]`)?.focus()
     }
   }
 
-  // 🔥 paste OTP
+  // paste OTP
   const handlePaste = (e) => {
     const pasteData = e.clipboardData.getData('text').replace(/\D/g, '')
     if (pasteData.length === 6) {
@@ -67,7 +68,7 @@ const VerifyForm = ({ email }) => {
     }
   }
 
-  // 🔥 auto submit khi đủ 6 số
+  // auto submit khi đủ 6 số
   const values = watch()
   useEffect(() => {
     const otp = Object.values(values).join('')
