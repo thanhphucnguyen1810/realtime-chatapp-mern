@@ -41,6 +41,7 @@
     "react-toastify": "^11.0.5",
     "redux-persist": "^6.0.0",
     "simplebar-react": "^3.3.1",
+    "socket.io-client": "^4.8.3",
     "stylis": "^4.3.6",
     "stylis-plugin-rtl": "^2.1.0",
     "yup": "^1.6.1"

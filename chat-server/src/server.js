@@ -1,8 +1,13 @@
 /* eslint-disable no-console */
-import http from 'http'
 import exitHook from 'async-exit-hook'
 import app from '~/app'
 import { CONNECT_DB, CLOSE_DB } from '~/config/mongodb'
+import { corsOptions } from './config/cors'
+
+import socketIo from 'socket.io'
+import http from 'http'
+import User from './models/user.model'
+import FriendRequest from './models/friendRequest'
 
 // Handle uncaught exceptions
 process.on('uncaughtException', (err) => {
@@ -16,9 +21,79 @@ const START_SERVER = () => {
   const PORT = process.env.APP_PORT
 
   server = http.createServer(app)
+  const io = socketIo(server, { cors: corsOptions })
 
   server.listen(PORT, HOSTNAME, () => {
     console.log(`Server is running at http://${HOSTNAME}:${PORT}`)
+  })
+
+  io.on('connection', async (socket) => {
+    // Gọi các socket tùy theo tính năng
+    // console.log(JSON.stringify(socket.handshake.query))
+
+    const user_id = socket.handshake.query['user_id']
+    const socket_id = socket.id
+    console.log(`User connected ${socket._id}`)
+    if (Boolean(user_id)) {
+      await User.findByIdAndUpdate(user_id, { socket_id })
+    }
+
+    //we can write our socket event listeners here
+    socket.on('friend_ request', async (data, callback) => {
+      console.log(data.to)
+
+      const to_user = await User.findById(data.to).select('socket_id')
+      const from_user = await User.findById(data.from).select('socket_id')
+
+      await FriendRequest.create({
+        sender: data.from,
+        recipient: data.to
+      })
+
+      // TODO: Create a friend request
+      // emit event => 'new_friend_request'
+      io.to(to_user.socket_id).emit('new_friend_request', {
+        //
+        message: 'New Friend Request Received'
+      })
+      // emit event => 'request_sent'
+      io.to(from_user.socket_id).emit('request_sent', {
+        message: 'Request sent successfully!'
+      })
+    })
+
+    socket.on('accept_request', async ( data ) => {
+      console.log(data)
+      const request_doc = await FriendRequest.findById(data.request_id)
+      console.log(request_doc)
+
+      // request_id
+
+      const sender = await User.findById(request_doc.sender)
+      const receiver = await User.findById(request_doc.recipient)
+
+      sender.friends.push(request_doc.recipient)
+      sender.friends.push(request_doc.sender)
+
+      await receiver.save({ new: true, validateModifiedOnly: true })
+      await sender.save({ new: true, validateModifiedOnly: true })
+
+      await FriendRequest.findByIdAndDelete(data.request_id)
+
+      io.to(sender.socket_id).emit('request_accepted', {
+        message: 'Friend Request Accepted!'
+      })
+      io.to(receiver.socket_id).emit('request_accepted', {
+        message: 'Friend Request Accepted!'
+      })
+    })
+
+    socket.on('end', function () {
+      console.log('Closing connection')
+      socket.disconnect(0)
+
+    })
+
   })
 
   exitHook(() => {

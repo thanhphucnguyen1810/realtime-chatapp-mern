@@ -48,12 +48,25 @@ export function RegisterUser(formValues, navigate) {
 export function VerifyOTP(formValues) {
   return async (dispatch) => {
     try {
-      const res = await axios.post('/auth/verify', formValues)
+      const res = await axios.post(
+        '/auth/verify',
+        { ...formValues },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        .then((res) => {
+          dispatch(slice.actions.logIn({
+            isLoggedIn: true,
+            token: res.data.token
+          }))
 
-      dispatch(slice.actions.logIn({
-        isLoggedIn: true,
-        token: res.data.token
-      }))
+          window.localStorage.setItem('user_id', res.data.user_id)
+        })
+        .catch((error) => console.log(error))
+
+
       return res.data
 
     } catch (error) {
@@ -65,16 +78,18 @@ export function VerifyOTP(formValues) {
 
 // Log in
 export function LoginUser(formValues) {
-  // formValues => { email, password }
-  return async (dispatch, getState) => {
-    await axios.post('/auth/login', {
-      ...formValues
-    }, {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }
-    ).then(function (response) {
+  return async (dispatch) => {
+    try {
+      const response = await axios.post(
+        '/auth/login',
+        { ...formValues },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      )
+
       console.log(response)
 
       dispatch(slice.actions.logIn({
@@ -82,22 +97,37 @@ export function LoginUser(formValues) {
         token: response.data.token
       }))
 
-      dispatch(showSnackbar({ severity: 'success', message: response.data.message }))
-    }).catch(function (error) {
+      window.localStorage.setItem('user_id', response.data.user_id)
+
+      dispatch(showSnackbar({
+        severity: 'success',
+        message: response.data.message
+      }))
+
+      return response.data
+    } catch (error) {
       console.log(error)
-      dispatch(showSnackbar({ severity: 'error', message: error.message }))
-    })
+
+      dispatch(showSnackbar({
+        severity: 'error',
+        message: error.response?.data?.message || error.message
+      }))
+
+      throw error
+    }
   }
 }
 
 export function LogoutUser() {
-  return async (dispatch, getState) => {
+  return async (dispatch) => {
+    window.localStorage.removeItem('user_id')
     dispatch(slice.actions.signOut())
+
   }
 }
 
 export function ForgotPassword(formValues) {
-  return async (dispatch, getState) => {
+  return async ( ) => {
     await axios
       .post('/auth/forgot-password', {
         ...formValues
@@ -117,7 +147,7 @@ export function ForgotPassword(formValues) {
 }
 
 export function NewPassword(formValues) {
-  return async (dispatch, getState) => {
+  return async (dispatch) => {
     await axios.post('/auth/reset-password', { ...formValues }, {
       headers: {
         'Content-Type': 'application/json'
