@@ -13,7 +13,9 @@ const initialState = {
   },
   users: [],
   friends: [],
-  friendRequests: []
+  friendRequests: [],
+  chat_type: null,
+  room_id: null
 }
 
 const slice = createSlice({
@@ -32,7 +34,7 @@ const slice = createSlice({
       state.snackbar.severity = action.payload.severity
       state.snackbar.message = action.payload.message
     },
-    closeSnackbar (state, action) {
+    closeSnackbar (state) {
       state.snackbar.open = false
       state.snackbar.severity = null
       state.snackbar.message = null
@@ -45,6 +47,10 @@ const slice = createSlice({
     },
     updateFriendRequests(state, action) {
       state.friendRequests = action.payload.request
+    },
+    selectConversation (state, action) {
+      state.chat_type = 'individual'
+      state.room_id = action.payload.room_id
     }
   }
 })
@@ -54,19 +60,19 @@ export default slice.reducer
 
 // Định nghĩa thunk action
 export function ToggleSidebar() {
-  return async (dispatch, getState) => {
+  return async (dispatch) => {
     dispatch(slice.actions.toggleSidebar())
   }
 }
 
 export function UpdateSidebarType(type) {
-  return async (dispatch, getState) => {
+  return async (dispatch) => {
     dispatch(slice.actions.updateSidebarType({ type }))
   }
 }
 
 export function showSnackbar ({ severity, message }) {
-  return async(dispatch, getState) => {
+  return async(dispatch) => {
     dispatch(slice.actions.openSnackbar({ message, severity }))
     setTimeout(() => {
       dispatch(slice.actions.closeSnackbar())
@@ -74,7 +80,7 @@ export function showSnackbar ({ severity, message }) {
   }
 }
 
-export const closeSnackbar = () => async(dispatch, getState) => {
+export const closeSnackbar = () => async(dispatch) => {
   dispatch(slice.actions.closeSnackbar())
 }
 
@@ -123,5 +129,11 @@ export const FetchFriendRequests = () => {
     }).catch((error) => {
       console.log(error)
     })
+  }
+}
+
+export const SelectConversation = ({ room_id }) => {
+  return (dispatch) => {
+    dispatch(slice.actions.selectConversation({ room_id }))
   }
 }
