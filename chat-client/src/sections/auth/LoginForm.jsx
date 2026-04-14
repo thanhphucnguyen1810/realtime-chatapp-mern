@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { useState } from 'react'
 import * as Yup from 'yup'
-import { Link as RouterLink } from 'react-router-dom'
+import { Link as RouterLink, useNavigate } from 'react-router-dom'
 // form
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -21,7 +21,7 @@ import { useDispatch } from 'react-redux'
 
 // ------------------------------------------------------------------------
 const LoginForm = () => {
-
+  const navigate = useNavigate()
   const dispatch = useDispatch()
   const [showPassword, setShowPassword] = useState(false)
 
@@ -49,9 +49,8 @@ const LoginForm = () => {
 
   const onSubmit = async (data) => {
     try {
-      // Submit data to backend
-
-      dispatch(LoginUser(data))
+      await dispatch(LoginUser(data))
+      navigate('/')
     } catch (error) {
       console.error(error)
       reset()

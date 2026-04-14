@@ -51,7 +51,14 @@ const userSchema = new mongoose.Schema({
     default: false
   },
   otp:{ type: String },
-  otp_expiry_time:{ type: Date }
+  otp_expiry_time:{ type: Date },
+  socket_id: { type: String },
+  friends: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User'
+    }
+  ]
 })
 
 userSchema.pre('save', async function (next) {
