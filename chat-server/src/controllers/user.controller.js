@@ -1,4 +1,4 @@
-import friendRequest from '~/models/friendRequest'
+import friendRequest from '~/models/friendRequest.model'
 import User from '~/models/user.model'
 import filterObj from '~/utils/FilterObj'
 

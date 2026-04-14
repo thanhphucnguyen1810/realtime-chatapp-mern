@@ -7,7 +7,8 @@ import { corsOptions } from './config/cors'
 import socketIo from 'socket.io'
 import http from 'http'
 import User from './models/user.model'
-import FriendRequest from './models/friendRequest'
+import FriendRequest from './models/friendRequest.model'
+import path from 'path'
 
 // Handle uncaught exceptions
 process.on('uncaughtException', (err) => {
@@ -35,7 +36,7 @@ const START_SERVER = () => {
     const socket_id = socket.id
     console.log(`User connected ${socket._id}`)
     if (Boolean(user_id)) {
-      await User.findByIdAndUpdate(user_id, { socket_id })
+      await User.findByIdAndUpdate(user_id, { socket_id, status: 'Online' })
     }
 
     //we can write our socket event listeners here
@@ -88,7 +89,51 @@ const START_SERVER = () => {
       })
     })
 
-    socket.on('end', function () {
+    // Handle text/link messages
+    socket.on('text_message', (data) => {
+      console.log('Received Message', data)
+
+      // data: { to, from, text}
+      // Create a new conversation if it doesn't exist yet or add new message
+
+      // save to db
+
+      // emit incoming_message -> to user
+
+      // emit outgoing_message -> from user
+
+
+    })
+
+    socket.on('file_message', (data) => {
+      console.log('Received Message', data)
+      // data: { to, from, text, file }
+
+      // get the file extension
+      const fileExtension = path.extname(data.file.name)
+
+      // generate a unique filename
+      const fileName = `${Date.now()}_${Math.floor(Math.random()*10000)}${fileExtension}`
+
+      // upload file to AWS s3
+
+      // Create a new conversation if it doesn't exist yet or add new message
+
+      // save to db
+
+      // emit incoming_message -> to user
+
+      // emit outgoing_message -> from user
+
+    })
+    socket.on('end', async (data) => {
+      // Find user by _id set the status to offline
+      if (data.user_id) {
+        await User.findByIdAndUpdate(data.user_id, { status: 'Offline' })
+      }
+
+      // TODO: broadcast user_disconnected
+
       console.log('Closing connection')
       socket.disconnect(0)
 
