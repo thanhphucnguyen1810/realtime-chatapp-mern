@@ -9,10 +9,10 @@
     "node": ">=18.x"
   },
   "scripts": {
-    "dev": "vite --host",
-    "build": "vite build --base=./",
-    "preview": "vite preview",
+    "dev": "cross-env BUILD_MODE=development vite --host",
+    "build": "cross-env BUILD_MODE=production vite build --base=./",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,md}\""
   },
   "dependencies": {
@@ -26,7 +26,6 @@
     "@reduxjs/toolkit": "^2.8.1",
     "@testing-library/dom": "^10.4.0",
     "axios": "^1.10.0",
-    "emoji-mart": "^5.5.1",
     "framer-motion": "^10.16.1",
     "i18next": "^25.1.2",
     "phosphor-react": "^1.4.1",
@@ -54,7 +53,6 @@
     "@testing-library/user-event": "^14.4.3",
     "@types/react": "^18.2.46",
     "@types/react-dom": "^18.2.19",
-    "@vitejs/plugin-react": "^4.4.1",
     "@vitejs/plugin-react-swc": "^3.9.0",
     "babel-plugin-module-resolver": "^5.0.2",
     "eslint": "^9.26.0",

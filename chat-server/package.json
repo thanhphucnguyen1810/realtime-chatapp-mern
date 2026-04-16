@@ -11,9 +11,10 @@
   },
   "scripts": {
     "lint": "eslint src --ext js --report-unused-disable-directives --max-warnings 0",
-    "clean": "rmdir /s /q build && mkdir build",
-    "build-babel": "babel ./src -d ./build/src",
-    "build": "npm run clean && npm run build-babel",
+    "clean": "rm -rf build && mkdir build",
+    "build-babel": "./node_modules/.bin/babel ./src -d ./build/src",
+    "build": "npm install && npm run clean && npm run build-babel",
+    "start": "node build/src/server.js",
     "production": "npm run build && cross-env BUILD_MODE=production node ./build/src/server.js",
     "dev": "cross-env BUILD_MODE=development nodemon --exec babel-node ./src/server.js"
   },
@@ -42,16 +43,16 @@
     "otp-generator": "^4.0.0",
     "sib-api-v3-sdk": "^8.5.0",
     "socket.io": "^4.8.3",
-    "xss-clean": "^0.1.1"
-  },
-  "devDependencies": {
+    "xss-clean": "^0.1.1",
     "@babel/cli": "^7.27.2",
     "@babel/core": "^7.27.1",
-    "@babel/eslint-parser": "^7.27.1",
-    "@babel/node": "^7.27.1",
     "@babel/plugin-transform-runtime": "^7.27.1",
     "@babel/preset-env": "^7.27.2",
-    "babel-plugin-module-resolver": "^5.0.2",
+    "babel-plugin-module-resolver": "^5.0.2"
+  },
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.27.1",
+    "@babel/node": "^7.27.1",
     "eslint": "^9.27.0",
     "nodemon": "3.0.1"
   }
